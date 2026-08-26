@@ -4,7 +4,7 @@ API local para consultar el documento OWASP Top 10 for LLM Applications 2026 med
 
 ## Estado actual
 
-Hito 1: API, ingestión del PDF, embeddings, recuperación FAISS y generación local mediante Ollama.
+Hito 2: API RAG local con tests automatizados y pipeline de integración continua.
 
 ## Requisitos
 
@@ -64,6 +64,21 @@ La configuración principal funciona por CPU. En Windows con WSL 2, controladore
 ```bash
 docker compose -f compose.yaml -f compose.gpu.yaml up --build
 ```
+
+## Pruebas y calidad
+
+Instalá las dependencias de desarrollo y ejecutá las mismas verificaciones que utiliza CI:
+
+```bash
+python -m pip install -r requirements.txt -r requirements-dev.txt
+ruff check .
+ruff format --check .
+pytest
+bandit --quiet --recursive app
+pip-audit --requirement requirements.txt
+```
+
+Los tests usan implementaciones simuladas de Ollama, por lo que no descargan modelos ni requieren GPU.
 
 ## Documentación
 
