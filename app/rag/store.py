@@ -1,6 +1,6 @@
+import json
 from dataclasses import asdict
 from pathlib import Path
-import json
 
 import faiss
 import numpy as np
@@ -29,9 +29,7 @@ class VectorStore:
         index.add(vectors)
         return cls(index=index, chunks=chunks)
 
-    def save(
-        self, directory: Path, embedding_model: str, corpus_fingerprint: str
-    ) -> None:
+    def save(self, directory: Path, embedding_model: str, corpus_fingerprint: str) -> None:
         directory.mkdir(parents=True, exist_ok=True)
         faiss.write_index(self.index, str(directory / "index.faiss"))
         (directory / "chunks.json").write_text(

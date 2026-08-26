@@ -1,10 +1,9 @@
+import re
 from dataclasses import asdict, dataclass
 from hashlib import sha256
 from pathlib import Path
-import re
 
 from pypdf import PdfReader
-
 
 SECTION_PATTERN = re.compile(r"LLM(?:0[1-9]|10):2026")
 SECTION_NAMES = {
@@ -85,9 +84,7 @@ def chunks_from_pdf(
         elif "Appendix A: Related Framework Mappings" in page_heading:
             current_section = "Appendix A: Related Framework Mappings"
         elif "Appendix B: LLM Application Architecture" in page_heading:
-            current_section = (
-                "Appendix B: LLM Application Architecture and Threat Modeling"
-            )
+            current_section = "Appendix B: LLM Application Architecture and Threat Modeling"
         elif re.search(r"\bReferences\b", page_heading):
             current_section = "References"
 
