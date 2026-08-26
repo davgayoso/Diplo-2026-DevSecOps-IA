@@ -12,6 +12,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --requirement requirements.txt
 
 COPY --chown=appuser:appgroup app ./app
+COPY --chown=appuser:appgroup data/documents ./data/documents
+RUN mkdir -p /app/data/index && chown appuser:appgroup /app/data/index
 
 USER appuser
 
