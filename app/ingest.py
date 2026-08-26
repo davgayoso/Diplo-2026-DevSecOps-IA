@@ -15,6 +15,8 @@ def _batches(items: list[Chunk], size: int = 16) -> list[list[Chunk]]:
 def _corpus_fingerprint(pdf_paths: list[Path]) -> str:
     digest = sha256()
     digest.update(settings.embedding_model.encode())
+    digest.update(str(settings.document_start_page).encode())
+    digest.update(str(settings.document_end_page).encode())
     digest.update(str(settings.chunk_size_words).encode())
     digest.update(str(settings.chunk_overlap_words).encode())
     for path in pdf_paths:
@@ -51,6 +53,8 @@ def main() -> None:
                 path,
                 size=settings.chunk_size_words,
                 overlap=settings.chunk_overlap_words,
+                start_page=settings.document_start_page,
+                end_page=settings.document_end_page,
             )
         )
 

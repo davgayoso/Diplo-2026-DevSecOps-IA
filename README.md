@@ -23,6 +23,8 @@ docker compose up --build
 
 La primera ejecución descarga los modelos y crea el índice. Puede tardar varios minutos. Las ejecuciones siguientes reutilizan los volúmenes persistentes.
 
+La ingestión utiliza las páginas 5 a 107 del PDF. Se excluyen la portada, la licencia, el índice general, las referencias bibliográficas y los créditos para evitar que esos textos desplacen contenido técnico relevante durante la recuperación.
+
 Cuando el contenedor esté listo:
 
 - Health check: <http://localhost:8000/health>

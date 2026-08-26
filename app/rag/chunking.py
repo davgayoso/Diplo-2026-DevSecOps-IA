@@ -59,13 +59,24 @@ def _split_words(text: str, size: int, overlap: int) -> list[str]:
     return chunks
 
 
-def chunks_from_pdf(path: Path, size: int, overlap: int) -> list[Chunk]:
+def chunks_from_pdf(
+    path: Path,
+    size: int,
+    overlap: int,
+    start_page: int = 1,
+    end_page: int | None = None,
+) -> list[Chunk]:
     document_hash = sha256(path.read_bytes()).hexdigest()[:12]
     reader = PdfReader(path)
     current_section = "Front matter"
     chunks: list[Chunk] = []
 
     for page_number, page in enumerate(reader.pages, start=1):
+        if page_number < start_page:
+            continue
+        if end_page is not None and page_number > end_page:
+            break
+
         raw_text = page.extract_text() or ""
         page_heading = _clean_text(raw_text[:130])
         match = SECTION_PATTERN.search(page_heading)
