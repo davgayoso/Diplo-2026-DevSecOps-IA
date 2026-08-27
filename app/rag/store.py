@@ -63,11 +63,19 @@ class VectorStore:
         query_embedding: list[float],
         top_k: int,
         min_similarity: float,
+        section: str | None = None,
     ) -> list[tuple[Chunk, float]]:
         query = self._normalize([query_embedding])
-        scores, positions = self.index.search(query, min(top_k, len(self.chunks)))
+        search_limit = len(self.chunks) if section else min(top_k, len(self.chunks))
+        scores, positions = self.index.search(query, search_limit)
         results: list[tuple[Chunk, float]] = []
         for position, score in zip(positions[0], scores[0], strict=True):
-            if position >= 0 and float(score) >= min_similarity:
-                results.append((self.chunks[int(position)], float(score)))
+            if position < 0 or float(score) < min_similarity:
+                continue
+            chunk = self.chunks[int(position)]
+            if section is not None and chunk.section != section:
+                continue
+            results.append((chunk, float(score)))
+            if len(results) == top_k:
+                break
         return results

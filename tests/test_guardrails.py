@@ -2,6 +2,7 @@ import pytest
 from pydantic import ValidationError
 
 from app.models import AskRequest
+from app.security.guardrails import validate_model_output
 
 
 def test_question_is_normalized() -> None:
@@ -30,3 +31,18 @@ def test_question_allows_educational_reference_to_attack_phrase() -> None:
     )
 
     assert "ignore previous instructions" in request.question
+
+
+def test_model_output_is_normalized() -> None:
+    assert validate_model_output("  Respuesta valida.  ") == "Respuesta valida."
+
+
+@pytest.mark.parametrize("output", ["", "   ", "respuesta\u200boculta"])
+def test_model_output_rejects_empty_or_hidden_content(output: str) -> None:
+    with pytest.raises(ValueError):
+        validate_model_output(output)
+
+
+def test_model_output_rejects_excessive_length() -> None:
+    with pytest.raises(ValueError, match="allowed size"):
+        validate_model_output("a" * 8001)

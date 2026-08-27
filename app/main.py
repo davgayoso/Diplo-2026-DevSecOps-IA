@@ -41,7 +41,7 @@ def create_app(
     application = FastAPI(
         title="OWASP LLM Top 10 RAG API",
         description="API local para consultar el OWASP Top 10 para aplicaciones con LLM.",
-        version="0.3.0",
+        version="1.0.0",
         lifespan=lifespan,
     )
     register_error_handlers(application)
