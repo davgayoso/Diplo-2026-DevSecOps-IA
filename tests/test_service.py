@@ -1,6 +1,8 @@
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 import app.rag.service as service_module
 from app.rag.chunking import Chunk
 from app.rag.service import RagService
@@ -68,3 +70,12 @@ def test_service_builds_context_and_deduplicates_sources(monkeypatch) -> None:
     assert response.sources[0].score == 0.9123
     assert "first text" in service.client.context
     assert "second text" in service.client.context
+
+
+def test_service_rejects_empty_model_output(monkeypatch) -> None:
+    first = Chunk("a", "first text", "owasp.pdf", 10, "LLM01")
+    service = _service(monkeypatch, [(first, 0.9)])
+    service.client.answer = lambda _question, _context: "   "
+
+    with pytest.raises(ValueError, match="must not be empty"):
+        service.ask("What is prompt injection?")

@@ -2,6 +2,7 @@ from app.config import Settings
 from app.models import AskResponse, Source
 from app.rag.ollama import OllamaClient
 from app.rag.store import VectorStore
+from app.security.guardrails import validate_model_output
 
 
 class RagService:
@@ -53,5 +54,7 @@ class RagService:
                 )
                 seen_sources.add(source_key)
 
-        answer = self.client.answer(question, "\n\n---\n\n".join(context_parts))
+        answer = validate_model_output(
+            self.client.answer(question, "\n\n---\n\n".join(context_parts))
+        )
         return AskResponse(answer=answer, sources=sources)

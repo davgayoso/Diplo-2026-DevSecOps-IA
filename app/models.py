@@ -20,7 +20,7 @@ class Source(BaseModel):
 
 
 class AskResponse(BaseModel):
-    answer: str
+    answer: str = Field(min_length=1, max_length=8000)
     sources: list[Source]
 
 
