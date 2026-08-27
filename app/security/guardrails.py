@@ -34,3 +34,18 @@ def normalize_question(value: str) -> str:
     if any(pattern.search(normalized) for pattern in OVERRIDE_PATTERNS):
         raise ValueError("Question contains a disallowed instruction override")
     return normalized
+
+
+def validate_model_output(value: str, max_characters: int = 8000) -> str:
+    """Reject malformed model output before it crosses the API boundary."""
+    normalized = unicodedata.normalize("NFKC", value).strip()
+    if not normalized:
+        raise ValueError("Model output must not be empty")
+    if len(normalized) > max_characters:
+        raise ValueError("Model output exceeds the allowed size")
+    if any(
+        unicodedata.category(character) in {"Cc", "Cf"} and character not in "\n\t"
+        for character in normalized
+    ):
+        raise ValueError("Model output contains unsupported control characters")
+    return normalized

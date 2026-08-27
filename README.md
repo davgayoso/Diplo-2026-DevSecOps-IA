@@ -4,7 +4,17 @@ API local para consultar el documento OWASP Top 10 for LLM Applications 2026 med
 
 ## Estado actual
 
-Hito 3: API RAG local con seguridad, observabilidad y pipeline de integración continua.
+Version final: API RAG local con seguridad, observabilidad, CI y modelo de amenazas STRIDE.
+
+## Arquitectura resumida
+
+Docker Compose coordina Ollama, la descarga de modelos, la ingestion del PDF y FastAPI. La
+pregunta se transforma en un embedding, FAISS recupera los fragmentos relevantes y Llama 3.2
+redacta una respuesta limitada a ese contexto. La lista estructurada de fuentes se construye a
+partir del indice y no depende de lo que afirme el modelo.
+
+Las decisiones y sus trade-offs estan detallados en
+[Arquitectura y decisiones tecnicas](docs/architecture.md).
 
 ## Requisitos
 
@@ -57,6 +67,14 @@ En Swagger, probá `POST /ask` con:
 Primero presioná `Authorize` e ingresá una de las claves bajo `X-API-Key`. La clave `reader` permite consultar `/ask`; la clave `admin` también permite consultar `/metrics`.
 
 Las respuestas de error utilizan un formato uniforme e incluyen un identificador de solicitud. Las consultas están limitadas por credencial según `RATE_LIMIT_REQUESTS` y `RATE_LIMIT_WINDOW_SECONDS`.
+
+Ejemplo equivalente mediante PowerShell:
+
+```powershell
+$headers = @{ "X-API-Key" = "TU_READER_API_KEY" }
+$body = @{ question = "¿Qué es prompt injection y cómo recomienda OWASP mitigarla?" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri "http://localhost:8000/ask" -Headers $headers -ContentType "application/json" -Body $body
+```
 
 Los logs JSON pueden observarse con:
 
@@ -111,8 +129,23 @@ Los tests usan implementaciones simuladas de Ollama, por lo que no descargan mod
 
 - [Propuesta y alcance](docs/proposal.md)
 - [Atribución del corpus](docs/attribution.md)
+- [Arquitectura y decisiones técnicas](docs/architecture.md)
+- [Modelo de amenazas STRIDE](docs/threat-model.md)
+- [Controles y limitaciones de seguridad](docs/security.md)
+- [Guion de defensa de 10 minutos](docs/defense.md)
+- [Lista de verificación de entrega](docs/delivery-checklist.md)
 
-## Próximos pasos
+## Controles principales
 
-- Documentar el modelo de amenazas STRIDE y las decisiones de seguridad.
-- Completar la revisión final y preparar la defensa.
+- API keys y autorización con roles `reader` y `admin`.
+- Rate limiting por credencial con respuesta `429` y `Retry-After`.
+- Validación y normalización de entradas y salidas del modelo.
+- Separación del contexto no confiable y mitigaciones contra prompt injection.
+- Logs JSON sin claves, preguntas, respuestas ni fragmentos.
+- Métricas Prometheus restringidas al administrador.
+- API ejecutada como usuario no root, sin capacidades, con filesystem de solo lectura.
+- Puerto publicado solamente en `127.0.0.1` y Ollama sin puerto público.
+- Tests, cobertura, Ruff, Bandit, pip-audit y build ejecutados en GitHub Actions.
+
+Las limitaciones conocidas y el riesgo residual se documentan explícitamente; este proyecto no
+se presenta como una solución lista para producción.
