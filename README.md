@@ -145,6 +145,7 @@ Los tests usan implementaciones simuladas de Ollama, por lo que no descargan mod
 - Métricas Prometheus restringidas al administrador.
 - API ejecutada como usuario no root, sin capacidades, con filesystem de solo lectura.
 - Puerto publicado solamente en `127.0.0.1` y Ollama sin puerto público.
+- Encabezados HTTP contra MIME sniffing, carga entre origenes y almacenamiento en cache.
 - Tests, cobertura, Ruff, Bandit, pip-audit y build ejecutados en GitHub Actions.
 
 Las limitaciones conocidas y el riesgo residual se documentan explícitamente; este proyecto no
