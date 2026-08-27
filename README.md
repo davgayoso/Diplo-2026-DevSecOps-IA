@@ -4,7 +4,7 @@ API local para consultar el documento OWASP Top 10 for LLM Applications 2026 med
 
 ## Estado actual
 
-Hito 2: API RAG local con tests automatizados y pipeline de integración continua.
+Hito 3: API RAG local con seguridad, observabilidad y pipeline de integración continua.
 
 ## Requisitos
 
@@ -15,7 +15,22 @@ Hito 2: API RAG local con tests automatizados y pipeline de integración continu
 
 ## Ejecución local
 
-Desde la raíz del repositorio:
+Creá el archivo local de configuración:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Generá dos claves distintas desde PowerShell:
+
+```powershell
+[guid]::NewGuid().ToString("N")
+[guid]::NewGuid().ToString("N")
+```
+
+Reemplazá en `.env` los valores de `READER_API_KEY` y `ADMIN_API_KEY`. El archivo `.env` está ignorado por Git y no debe publicarse.
+
+Después, desde la raíz del repositorio:
 
 ```bash
 docker compose up --build
@@ -38,6 +53,18 @@ En Swagger, probá `POST /ask` con:
   "question": "¿Qué es prompt injection y cómo recomienda OWASP mitigarla?"
 }
 ```
+
+Primero presioná `Authorize` e ingresá una de las claves bajo `X-API-Key`. La clave `reader` permite consultar `/ask`; la clave `admin` también permite consultar `/metrics`.
+
+Las respuestas de error utilizan un formato uniforme e incluyen un identificador de solicitud. Las consultas están limitadas por credencial según `RATE_LIMIT_REQUESTS` y `RATE_LIMIT_WINDOW_SECONDS`.
+
+Los logs JSON pueden observarse con:
+
+```bash
+docker compose logs -f api
+```
+
+El endpoint `/metrics` devuelve métricas Prometheus de solicitudes, latencia y bloqueos por rate limiting. Requiere la clave de administrador.
 
 Para detener el proyecto:
 
@@ -87,4 +114,5 @@ Los tests usan implementaciones simuladas de Ollama, por lo que no descargan mod
 
 ## Próximos pasos
 
-- Agregar seguridad, observabilidad, pruebas y CI/CD.
+- Documentar el modelo de amenazas STRIDE y las decisiones de seguridad.
+- Completar la revisión final y preparar la defensa.

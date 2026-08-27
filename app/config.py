@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from secrets import compare_digest
 
 
 def _integer(name: str, default: int) -> int:
@@ -26,6 +27,18 @@ class Settings:
     min_similarity: float = _floating("MIN_SIMILARITY", 0.25)
     model_context_tokens: int = _integer("MODEL_CONTEXT_TOKENS", 4096)
     model_output_tokens: int = _integer("MODEL_OUTPUT_TOKENS", 500)
+    reader_api_key: str = os.getenv("READER_API_KEY", "")
+    admin_api_key: str = os.getenv("ADMIN_API_KEY", "")
+    rate_limit_requests: int = _integer("RATE_LIMIT_REQUESTS", 10)
+    rate_limit_window_seconds: int = _integer("RATE_LIMIT_WINDOW_SECONDS", 60)
+
+    def validate_security(self) -> None:
+        if len(self.reader_api_key) < 16 or len(self.admin_api_key) < 16:
+            raise RuntimeError("API keys must contain at least 16 characters")
+        if compare_digest(self.reader_api_key, self.admin_api_key):
+            raise RuntimeError("Reader and admin API keys must be different")
+        if self.rate_limit_requests < 1 or self.rate_limit_window_seconds < 1:
+            raise RuntimeError("Rate limit values must be positive")
 
 
 settings = Settings()
