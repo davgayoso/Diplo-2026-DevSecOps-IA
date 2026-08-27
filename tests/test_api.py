@@ -52,6 +52,22 @@ def test_health_and_readiness_are_public(secure_settings: Settings) -> None:
     assert ready.json()["chunks"] == 2
 
 
+def test_security_headers_are_added_to_success_and_error_responses(
+    secure_settings: Settings,
+) -> None:
+    with TestClient(create_app(FakeRagService, secure_settings)) as client:
+        success = client.get("/health")
+        authentication_error = client.post(
+            "/ask",
+            json={"question": "valid question"},
+        )
+
+    for response in (success, authentication_error):
+        assert response.headers["X-Content-Type-Options"] == "nosniff"
+        assert response.headers["Cross-Origin-Resource-Policy"] == "same-origin"
+        assert response.headers["Cache-Control"] == "no-store"
+
+
 def test_ask_accepts_reader_key(secure_settings: Settings) -> None:
     with TestClient(create_app(FakeRagService, secure_settings)) as client:
         response = client.post(

@@ -13,6 +13,7 @@ from app.observability.metrics import Metrics
 from app.observability.middleware import install_observability
 from app.rag.service import RagService
 from app.security.auth import ApiKeyAuthenticator, Principal
+from app.security.headers import install_security_headers
 from app.security.rate_limit import InMemoryRateLimiter
 
 RagFactory = Callable[[Settings], RagService]
@@ -41,10 +42,11 @@ def create_app(
     application = FastAPI(
         title="OWASP LLM Top 10 RAG API",
         description="API local para consultar el OWASP Top 10 para aplicaciones con LLM.",
-        version="1.0.0",
+        version="1.0.1",
         lifespan=lifespan,
     )
     register_error_handlers(application)
+    install_security_headers(application)
     install_observability(application, metrics)
 
     async def require_admin(

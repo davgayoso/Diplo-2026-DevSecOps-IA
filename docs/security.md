@@ -30,6 +30,9 @@ con `[guid]::NewGuid().ToString("N")` en PowerShell.
 - El indice se monta de solo lectura en la API.
 - El puerto se publica solo en la interfaz local `127.0.0.1`.
 - Los logs rotan para evitar crecimiento indefinido.
+- Todas las respuestas incluyen `X-Content-Type-Options: nosniff` y
+  `Cross-Origin-Resource-Policy: same-origin`.
+- `Cache-Control: no-store` evita almacenar respuestas en caches intermedios o del navegador.
 
 ## Observabilidad segura
 
