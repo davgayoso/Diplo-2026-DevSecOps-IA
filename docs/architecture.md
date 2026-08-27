@@ -30,12 +30,15 @@ Una falla de descarga o ingestion impide que la API inicie con un estado inconsi
 1. FastAPI valida el JSON y normaliza la pregunta.
 2. La API autentica `X-API-Key` y determina el rol.
 3. El rate limiter comprueba la cuota de la credencial.
-4. Qwen3 Embedding transforma la pregunta en un vector.
-5. FAISS recupera los fragmentos que superan el umbral de similitud.
-6. La API delimita esos fragmentos como contexto no confiable.
-7. Llama 3.2 genera una respuesta acotada al contexto.
-8. La salida se normaliza, se limita y se devuelve con fuentes creadas por la aplicacion.
-9. La API registra estado, duracion y `request_id`, pero no el contenido ni la clave.
+4. Una referencia estructurada como `top 2`, `riesgo 2` o `LLM02` se traduce al nombre
+   oficial de la seccion correspondiente.
+5. Qwen3 Embedding transforma la consulta enriquecida en un vector.
+6. FAISS recupera los fragmentos que superan el umbral de similitud y, cuando existe una
+   referencia estructurada, restringe los resultados a esa seccion.
+7. La API delimita esos fragmentos como contexto no confiable.
+8. Llama 3.2 genera una respuesta acotada al contexto.
+9. La salida se normaliza, se limita y se devuelve con fuentes creadas por la aplicacion.
+10. La API registra estado, duracion y `request_id`, pero no el contenido ni la clave.
 
 ## Componentes
 
@@ -65,6 +68,10 @@ La GPU es opcional; la configuracion principal funciona por CPU.
 Es suficiente para un unico PDF y reduce la cantidad de servicios. No ofrece las capacidades
 multiusuario, replicacion o control de acceso de una base vectorial externa, que quedan fuera
 del alcance del trabajo.
+
+La recuperacion combina similitud semantica con un filtro de metadatos cuando el usuario
+menciona un identificador concreto del Top 10. Esto evita depender de que el embedding deduzca
+que una expresion coloquial como `top 2` significa `LLM02`.
 
 ### API keys y dos roles
 

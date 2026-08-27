@@ -28,3 +28,16 @@ def test_store_round_trip_and_similarity_search(tmp_path: Path) -> None:
 def test_store_rejects_mismatched_embeddings() -> None:
     with pytest.raises(ValueError, match="same non-zero length"):
         VectorStore.build(_chunks(), [[1.0, 0.0]])
+
+
+def test_store_filters_results_by_requested_section() -> None:
+    store = VectorStore.build(_chunks(), [[1.0, 0.0], [0.0, 1.0]])
+
+    results = store.search(
+        [1.0, 0.0],
+        top_k=2,
+        min_similarity=0.0,
+        section="LLM02",
+    )
+
+    assert [chunk.section for chunk, _score in results] == ["LLM02"]
