@@ -1,5 +1,12 @@
 FROM python:3.12-slim
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --only-upgrade \
+        libssl3t64 \
+        openssl \
+        openssl-provider-legacy \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
@@ -9,7 +16,13 @@ RUN addgroup --system appgroup \
     && adduser --system --ingroup appgroup appuser
 
 COPY requirements.txt .
-RUN pip install --only-binary :all: -r requirements.txt
+
+RUN python -m pip install --no-cache-dir --upgrade "pip==26.2.1" \
+    && python -m pip install --no-cache-dir --requirement requirements.txt \
+    && python -m pip check \
+    && python -m pip uninstall --yes pip \
+    && python -c "import importlib.util; assert importlib.util.find_spec('pip') is None" \
+    && python -c "import fastapi, uvicorn, faiss, httpx, numpy, pypdf, prometheus_client"
 
 COPY --chown=appuser:appgroup app ./app
 COPY --chown=appuser:appgroup data/documents ./data/documents
