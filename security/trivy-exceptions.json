@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "approved_by": "David Gayoso, responsable del proyecto",
+  "approved_on": "2026-08-31",
+  "expires_on": "2026-09-14",
+  "scope": {
+    "os_family": "debian",
+    "os_name": "13.6",
+    "architecture": "amd64"
+  },
+  "exceptions": [
+    {
+      "id": "CVE-2026-41992",
+      "package": "gzip",
+      "version": "1.13-1",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal para la entrega local. El RAG no invoca gzip sobre archivos del usuario. No se declara corregido ni falso positivo."
+    },
+    {
+      "id": "CVE-2026-54369",
+      "package": "libacl1",
+      "version": "2.3.2-2+b1",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local; contenedor sin privilegios ni capacidades Linux y sin administracion de ACL desde la API. No elimina todo riesgo."
+    },
+    {
+      "id": "CVE-2025-69720",
+      "package": "libncursesw6",
+      "version": "6.5+20250216-2",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. La aplicacion no ejecuta infocmp ni procesa definiciones de terminal recibidas del usuario."
+    },
+    {
+      "id": "CVE-2026-11822",
+      "package": "libsqlite3-0",
+      "version": "3.46.1-7+deb13u1",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. La recuperacion usa FAISS, no SQLite; no se admiten bases SQLite aportadas por usuarios."
+    },
+    {
+      "id": "CVE-2026-11824",
+      "package": "libsqlite3-0",
+      "version": "3.46.1-7+deb13u1",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. La recuperacion usa FAISS, no SQLite; no se admiten bases SQLite aportadas por usuarios."
+    },
+    {
+      "id": "CVE-2025-69720",
+      "package": "libtinfo6",
+      "version": "6.5+20250216-2",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. La aplicacion no ejecuta infocmp ni procesa definiciones de terminal recibidas del usuario."
+    },
+    {
+      "id": "CVE-2025-69720",
+      "package": "ncurses-base",
+      "version": "6.5+20250216-2",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. La aplicacion no ejecuta infocmp ni procesa definiciones de terminal recibidas del usuario."
+    },
+    {
+      "id": "CVE-2025-69720",
+      "package": "ncurses-bin",
+      "version": "6.5+20250216-2",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. La aplicacion no ejecuta infocmp ni procesa definiciones de terminal recibidas del usuario."
+    },
+    {
+      "id": "CVE-2026-13221",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "severity": "CRITICAL",
+      "reason": "Aceptacion temporal local. La aplicacion usa Python y no ejecuta expresiones regulares mediante Perl. No se declara falso positivo."
+    },
+    {
+      "id": "CVE-2026-42496",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "severity": "CRITICAL",
+      "reason": "Aceptacion temporal local. La API no invoca Perl ni Archive::Tar y no ofrece extraccion de archivos TAR de usuarios."
+    },
+    {
+      "id": "CVE-2026-8376",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "severity": "CRITICAL",
+      "reason": "Aceptacion temporal local, limitada a amd64. La aplicacion no ejecuta regex de Perl; no se afirma una prueba formal de no explotabilidad."
+    },
+    {
+      "id": "CVE-2026-42497",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. La API no invoca Perl ni Archive::Tar y no ofrece extraccion de archivos TAR de usuarios."
+    },
+    {
+      "id": "CVE-2026-48962",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. El servicio no ejecuta Perl ni IO::Compress con datos suministrados por usuarios."
+    },
+    {
+      "id": "CVE-2026-57432",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. El servicio no ejecuta operaciones pack/unpack de Perl con entradas de usuarios."
+    },
+    {
+      "id": "CVE-2026-57433",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. El servicio no usa Perl Storable ni deserializa objetos Perl de usuarios."
+    },
+    {
+      "id": "CVE-2026-9538",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "severity": "HIGH",
+      "reason": "Aceptacion temporal local. La API no invoca Perl ni Archive::Tar y no ofrece extraccion de archivos TAR de usuarios."
+    }
+  ]
+}

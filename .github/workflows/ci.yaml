@@ -95,10 +95,7 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
-      - name: Check HIGH and CRITICAL vulnerabilities
+      - name: Enforce Trivy policy with temporary exceptions
         run: |
-          trivy convert \
-            --format table \
-            --severity HIGH,CRITICAL \
-            --exit-code 1 \
-            trivy-report.json
+          python3 -m unittest discover -s tests -p "test_trivy_policy.py" -v
+          python3 scripts/check_trivy.py trivy-report.json
