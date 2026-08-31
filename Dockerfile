@@ -9,7 +9,7 @@ RUN addgroup --system appgroup \
     && adduser --system --ingroup appgroup appuser
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir --requirement requirements.txt
+RUN pip install --only-binary :all: -r requirements.txt
 
 COPY --chown=appuser:appgroup app ./app
 COPY --chown=appuser:appgroup data/documents ./data/documents
